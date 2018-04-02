@@ -16,10 +16,9 @@ class Telegram:
         self.token = token
         self.loop = loop or asyncio.get_event_loop()
         self.coro = asyncio.ensure_future(self.get_updates())
-        # self.loop.call_soon(lambda: self.coro)
 
     async def get(self, call):
-        url = f"https://api.telegram.org/bot{self.token}/{call}"
+        url = f'https://api.telegram.org/bot{self.token}/{call}'
         log.debug('get: %s', url)
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
@@ -28,14 +27,14 @@ class Telegram:
     async def get_updates(self):
         messages = []
         while True:
-            call = "getUpdates?timeout=5"
+            call = 'getUpdates?timeout=5'
             try:
                 if messages:
-                    call = f"{call}&offset={messages[-1]['update_id']+1}"
+                    call = f'{call}&offset={messages[-1]['update_id']+1}'
                 result = await self.get(call)
                 messages.extend(result['result'])
 
-                log.debug("Got messages: %s (total: %s)", len(result['result']), len(messages))
+                log.debug('Got messages: %s (total: %s)', len(result['result']), len(messages))
                 for i in result['result']:
                     log.debug('Text: %s', i['message']['text'])
             except Exception as e:
@@ -56,7 +55,6 @@ async def get_me():
 def main():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(get_me())
-    # loop.run_forever()
 
 
 if __name__ == '__main__':

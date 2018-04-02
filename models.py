@@ -1,6 +1,6 @@
 import textwrap
 import asyncio
-import aioodbc
+#import aioodbc
 
 
 class Item:

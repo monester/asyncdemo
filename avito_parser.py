@@ -1,7 +1,10 @@
+import logging
+
 from html.parser import HTMLParser
 from models import Item
 
 AVITO_URL = 'https://www.avito.ru'
+log = logging.getLogger(__name__)
 
 
 class BaseAvitoHTMLParser(HTMLParser):
@@ -151,6 +154,8 @@ class AvitoItemHTMLParser(BaseAvitoHTMLParser):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s')
+    log.setLevel(logging.DEBUG)
     # with open('avito_item.html', encoding='utf-8') as f:
     #     html = f.read()
     #

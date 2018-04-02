@@ -24,14 +24,22 @@ async def fetch(url):
 
 async def search(text):
     url = avito_url + urllib.parse.quote(text)
-    log.debug(f"URL: {url}")
+    log.debug(f"Searching text: '%s'", text)
 
-    html = await fetch(url)
+    try:
+        html = await fetch(url)
+    except Exception as e:
+        log.error("Unable to fetch %s", url, exc_info=True)
+        return {}
 
     parser = AvitoHTMLParser()
     parser.feed(html)
 
-    items = {i.id: i for i in parser.items}
+    if not parser.items:
+        log.error("Search for text '%s' return no results.", text)
+        items = {}
+    else:
+        items = {i.id: i for i in parser.items}
 
     return items
 
@@ -63,7 +71,10 @@ class Chat:
         while True:
             items = {}
             for text in self.search_filters:
-                items.update(await search(text))
+                try:
+                    items.update(await search(text))
+                except Exception:
+
 
             if self.initial_poll:
                 self.initial_poll = False
